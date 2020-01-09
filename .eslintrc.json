@@ -18,6 +18,7 @@
     "prettier/prettier": "error",
     "class-methods-use-this": "off",
     "no-param-reassign": "off",
+    "no-plusplus": "off",
     "camelcase": "off",
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "jest/no-disabled-tests": "warn",

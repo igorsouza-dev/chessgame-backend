@@ -28,13 +28,43 @@ describe('Chess ', () => {
     const possible_moves = [-18, -33, -31, -14, 18, 33, 31, 14];
     expect(chess.PIECE_OFFSETS.n).toEqual(possible_moves);
   });
+  test('Function isPositionInsideBoard should exists', () => {
+    expect(chess.isPositionInsideBoard).toBeInstanceOf(Function);
+  });
+  test('Funcion isPositionInsideBoard should return the position value or null depending on the position passed', () => {
+    expect(chess.isPositionInsideBoard('a88')).toStrictEqual(null);
+    expect(chess.isPositionInsideBoard('a1')).toStrictEqual(112);
+    expect(chess.isPositionInsideBoard(200)).toStrictEqual(null);
+    expect(chess.isPositionInsideBoard(-1)).toStrictEqual(null);
+    expect(chess.isPositionInsideBoard(2)).toStrictEqual(2);
+  });
+  test('Function valueToSAN should exists', () => {
+    expect(chess.valueToSAN).toBeInstanceOf(Function);
+  });
+  test('Function valuToSAN should convert integer values to SAN strings', () => {
+    expect(chess.valueToSAN(0)).toEqual('a8');
+    expect(chess.valueToSAN(119)).toEqual('h1');
+    expect(chess.valueToSAN(66)).toEqual('c4');
+  });
   test('Function getLegalMoves should exists', () => {
     expect(chess.getLegalMoves).toBeInstanceOf(Function);
   });
-  test('Function getLevalMoves should return an array of moves for the Knight', () => {
-    expect(chess.getLegalMoves('n', 'G4')).toBeInstanceOf(Array);
+  test('Function getLegalMoves should return an empty array if passed invalid piece or position', () => {
+    expect(chess.getLegalMoves('xx', 'f3')).toEqual([]);
+    expect(chess.getLegalMoves('n', 'f55')).toEqual([]);
+  });
+  test('Function getLegalMoves should return an array of moves for the Knight', () => {
+    let correct_moves = ['d4', 'e5', 'g5', 'h4', 'h2', 'g1', 'e1', 'd2'];
+    expect(chess.getLegalMoves('n', 'f3')).toEqual(correct_moves);
+    correct_moves = ['e5', 'f6', 'h6', 'h2', 'f2', 'e3'];
+    expect(chess.getLegalMoves('n', 'g4')).toEqual(correct_moves);
   });
   test('Function checkMove should exists', () => {
     expect(chess.checkMove).toBeInstanceOf(Function);
+  });
+  test('Function checkMove should return true or false depending of the position intended, current position and piece', () => {
+    expect(chess.checkMove('n', 'g4', 'f4')).toStrictEqual(false);
+    expect(chess.checkMove('n', 'g4', 'e5')).toStrictEqual(true);
+    expect(chess.checkMove('aaa', 'g4', 'e5')).toStrictEqual(false);
   });
 });

@@ -15,27 +15,53 @@ function Chess() {
   const PIECE_OFFSETS = {
     n: [-18, -33, -31, -14, 18, 33, 31, 14],
   };
+  function isPositionInsideBoard(position) {
+    if (typeof position === 'string') {
+      position = SQUARES[`${position}`.toLowerCase()];
+      if (position === undefined) {
+        return null;
+      }
+    }
+    const last_pos = SQUARES.h1;
+    const first_pos = SQUARES.a8;
+    if (
+      position >= first_pos &&
+      position <= last_pos &&
+      (position & 0x88) === 0
+    ) {
+      return position;
+    }
+    return null;
+  }
+  function valueToSAN(value) {
+    const swaped = Object.fromEntries(
+      Object.entries(SQUARES).map(a => a.reverse())
+    );
+    return swaped[value];
+  }
   function getLegalMoves(piece, position) {
-    const pos = `${position}`.toLowerCase;
+    const pos_value = isPositionInsideBoard(position);
     const offsets = PIECE_OFFSETS[piece];
-    let legalMoves = [];
-    if (offsets) {
-      const posValue = SQUARES[pos];
-      if (posValue) {
-        if (piece === KNIGHT) {
-          // a knight can jump other pieces
-          legalMoves = offsets.map(offset => {});
-        }
+    const legalMoves = [];
+    if (pos_value && offsets) {
+      for (let i = 0; i < offsets.length; i++) {
+        const move = offsets[i] + pos_value;
+        if (isPositionInsideBoard(move)) legalMoves.push(valueToSAN(move));
       }
     }
     return legalMoves;
   }
-  function checkMove() {}
+  function checkMove(piece, from, to) {
+    const legalMoves = getLegalMoves(piece, from);
+    return legalMoves.includes(to);
+  }
   return {
     SQUARES,
     PIECE_OFFSETS,
     checkMove,
     getLegalMoves,
+    isPositionInsideBoard,
+    valueToSAN,
   };
 }
 export default Chess();

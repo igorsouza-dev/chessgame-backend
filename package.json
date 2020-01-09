@@ -8,7 +8,7 @@
     "dev": "nodemon src/server.js",
     "queue": "nodemon src/queue.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
-    "test": "jest --colors --verbose --watch",
+    "test": "jest --colors --verbose --watchAll --coverage",
     "start": "node dist/server.js"
   },
   "dependencies": {
