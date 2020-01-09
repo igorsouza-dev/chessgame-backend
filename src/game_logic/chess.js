@@ -35,6 +35,14 @@ class Chess {
     });
   }
 
+  getBoard() {
+    return this.board;
+  }
+
+  setBoard(board) {
+    this.board = board;
+  }
+
   isPositionInsideBoard(position) {
     if (typeof position === 'string') {
       position = SQUARES[`${position}`.toLowerCase()];
@@ -61,27 +69,41 @@ class Chess {
     return swaped[value];
   }
 
-  getLegalMoves(piece, position) {
+  getLegalMoves(playerColor, piece, position) {
     const pos_value = this.isPositionInsideBoard(position);
+
     const offsets = PIECE_OFFSETS[piece];
     const legalMoves = [];
     if (pos_value && offsets) {
       for (let i = 0; i < offsets.length; i++) {
         const move = offsets[i] + pos_value;
-        if (this.isPositionInsideBoard(move))
-          legalMoves.push(this.valueToSAN(move));
+        if (this.isPositionInsideBoard(move)) {
+          const san = this.valueToSAN(move);
+          const square = this.board[san];
+          if (!square.piece || square.color !== playerColor) {
+            legalMoves.push(san);
+          }
+        }
       }
     }
     return legalMoves;
   }
 
-  checkMove(piece, from, to) {
-    const legalMoves = this.getLegalMoves(piece, from);
+  checkMove(playerColor, piece, from, to) {
+    const legalMoves = this.getLegalMoves(playerColor, piece, from);
     return legalMoves.includes(to);
   }
 
-  getBoard() {
-    return this.board;
+  move(playerColor, from, to) {
+    const square = this.board[from];
+    if (square.color && square.color === playerColor) {
+      if (this.checkMove(playerColor, square.piece, from, to)) {
+        this.board[to] = { color: playerColor, piece: square.piece };
+        this.board[from] = { color: '', piece: null };
+        return true;
+      }
+    }
+    return false;
   }
 }
 export default Chess;

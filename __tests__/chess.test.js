@@ -17,6 +17,9 @@ describe('Chess ', () => {
   test('It should have a function named getBoard that returns the current state of the board as an object', () => {
     expect(chess.getBoard()).toBeInstanceOf(Object);
   });
+  test('It should have a setBoard function that accepts a object as parameter', () => {
+    expect(chess.setBoard).toBeInstanceOf(Function);
+  });
   test('The constructor should accept a board object set it as the current board', () => {
     const squares = Object.keys(SQUARES);
     const board = {};
@@ -80,17 +83,69 @@ describe('Chess ', () => {
     expect(chess.getLegalMoves('N', 'f55')).toEqual([]);
   });
   test('Function getLegalMoves should return an array of moves for the Knight', () => {
+    const playerColor = 'W';
     let correct_moves = ['d4', 'e5', 'g5', 'h4', 'h2', 'g1', 'e1', 'd2'];
-    expect(chess.getLegalMoves('N', 'f3')).toEqual(correct_moves);
+    expect(chess.getLegalMoves(playerColor, 'N', 'f3')).toEqual(correct_moves);
     correct_moves = ['e5', 'f6', 'h6', 'h2', 'f2', 'e3'];
-    expect(chess.getLegalMoves('N', 'g4')).toEqual(correct_moves);
+    expect(chess.getLegalMoves(playerColor, 'N', 'g4')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should', () => {
+    const correct_moves = ['f6', 'h6', 'h2', 'f2', 'e3'];
+    const playerColor = 'W';
+    const board = chess.getBoard();
+    board.e5.color = playerColor;
+    board.e5.piece = 'P';
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'N', 'g4')).toEqual(correct_moves);
   });
   test('Function checkMove should exists', () => {
     expect(chess.checkMove).toBeInstanceOf(Function);
   });
   test('Function checkMove should return true or false depending on the position intended, current position and piece', () => {
-    expect(chess.checkMove('N', 'g4', 'f4')).toStrictEqual(false);
-    expect(chess.checkMove('N', 'g4', 'e5')).toStrictEqual(true);
-    expect(chess.checkMove('aaa', 'g4', 'e5')).toStrictEqual(false);
+    const playerColor = 'W';
+    expect(chess.checkMove(playerColor, 'N', 'g4', 'f4')).toStrictEqual(false);
+    expect(chess.checkMove(playerColor, 'N', 'g4', 'e5')).toStrictEqual(true);
+    expect(chess.checkMove(playerColor, 'aaa', 'g4', 'e5')).toStrictEqual(
+      false
+    );
+  });
+  test('Function checkMove should consider the player color when checking if can move', () => {
+    const playerColor = 'W';
+    let board = chess.getBoard();
+    board.e5.color = 'B';
+    board.e5.piece = 'K';
+    chess.setBoard(board);
+    expect(chess.checkMove(playerColor, 'N', 'g4', 'e5')).toStrictEqual(true);
+    chess.resetBoard();
+    board = chess.getBoard();
+    board.e5.color = playerColor;
+    board.e5.piece = 'P';
+    chess.setBoard(board);
+    expect(chess.checkMove(playerColor, 'N', 'g4', 'e5')).toStrictEqual(false);
+  });
+  test('Function move should exists', () => {
+    expect(chess.move).toBeInstanceOf(Function);
+  });
+  test('Function move should be able to change the board correctly', () => {
+    const player1 = 'W';
+    const player2 = 'B';
+    let board = chess.getBoard();
+    board.g4 = { color: player1, piece: 'N' };
+    board.e5 = { color: player2, piece: 'P' };
+    chess.setBoard(board);
+    chess.move(player1, 'g4', 'e5');
+    board = chess.getBoard();
+    expect(board.e5).toEqual({ color: player1, piece: 'N' });
+    expect(board.g4).toEqual({ color: '', piece: null });
+    // checks when target square is the same color
+    board.g4 = { color: player1, piece: 'N' };
+    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual(false);
+
+    // empty target square
+    board.g4 = { color: '', piece: '' };
+    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual(true);
+
+    // checks if player is the owner of the piece
+    expect(chess.move(player2, 'e5', 'g4')).toStrictEqual(false);
   });
 });
