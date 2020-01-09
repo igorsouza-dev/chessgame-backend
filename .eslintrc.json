@@ -20,6 +20,7 @@
     "no-param-reassign": "off",
     "no-plusplus": "off",
     "camelcase": "off",
+    "no-bitwise": "off",
     "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",

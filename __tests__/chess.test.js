@@ -1,11 +1,37 @@
-import chess from '../src/game_logic/chess';
+import Chess, { SQUARES, PIECE_OFFSETS } from '../src/game_logic/chess';
 
 describe('Chess ', () => {
+  let chess;
+  beforeEach(() => {
+    chess = new Chess();
+  });
   test('Main file should exists', () => {
     expect(chess).toBeTruthy();
   });
   test('Array of mapped board squares should exists', () => {
-    expect(chess.SQUARES).toBeTruthy();
+    expect(SQUARES).toBeTruthy();
+  });
+  test('It should have a function named resetBoard', () => {
+    expect(chess.resetBoard).toBeInstanceOf(Function);
+  });
+  test('It should have a function named getBoard that returns the current state of the board as an object', () => {
+    expect(chess.getBoard()).toBeInstanceOf(Object);
+  });
+  test('The constructor should accept a board object set it as the current board', () => {
+    const squares = Object.keys(SQUARES);
+    const board = {};
+    squares.map(square => {
+      board[square] = {
+        color: '',
+        piece: null,
+      };
+      return square;
+    });
+    board.a8.piece = 'K';
+    board.a8.color = 'W';
+    const newChess = new Chess(board);
+
+    expect(newChess.getBoard()).toEqual(board);
   });
   test('Array of mapped board squares should be correctly mapped', () => {
     // prettier-ignore
@@ -19,19 +45,19 @@ describe('Chess ', () => {
       a2:  96, b2:  97, c2:  98, d2:  99, e2: 100, f2: 101, g2: 102, h2: 103,
       a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
     };
-    expect(chess.SQUARES).toEqual(squares);
+    expect(SQUARES).toEqual(squares);
   });
   test('Array of pieces movesets should exists ', () => {
-    expect(chess.PIECE_OFFSETS).toBeTruthy();
+    expect(PIECE_OFFSETS).toBeTruthy();
   });
   test('Array of possible moves for the Knight should be correctly mapped', () => {
     const possible_moves = [-18, -33, -31, -14, 18, 33, 31, 14];
-    expect(chess.PIECE_OFFSETS.n).toEqual(possible_moves);
+    expect(PIECE_OFFSETS.N).toEqual(possible_moves);
   });
   test('Function isPositionInsideBoard should exists', () => {
     expect(chess.isPositionInsideBoard).toBeInstanceOf(Function);
   });
-  test('Funcion isPositionInsideBoard should return the position value or null depending on the position passed', () => {
+  test('Function isPositionInsideBoard should return the position value or null depending on the position passed', () => {
     expect(chess.isPositionInsideBoard('a88')).toStrictEqual(null);
     expect(chess.isPositionInsideBoard('a1')).toStrictEqual(112);
     expect(chess.isPositionInsideBoard(200)).toStrictEqual(null);
@@ -51,20 +77,20 @@ describe('Chess ', () => {
   });
   test('Function getLegalMoves should return an empty array if passed invalid piece or position', () => {
     expect(chess.getLegalMoves('xx', 'f3')).toEqual([]);
-    expect(chess.getLegalMoves('n', 'f55')).toEqual([]);
+    expect(chess.getLegalMoves('N', 'f55')).toEqual([]);
   });
   test('Function getLegalMoves should return an array of moves for the Knight', () => {
     let correct_moves = ['d4', 'e5', 'g5', 'h4', 'h2', 'g1', 'e1', 'd2'];
-    expect(chess.getLegalMoves('n', 'f3')).toEqual(correct_moves);
+    expect(chess.getLegalMoves('N', 'f3')).toEqual(correct_moves);
     correct_moves = ['e5', 'f6', 'h6', 'h2', 'f2', 'e3'];
-    expect(chess.getLegalMoves('n', 'g4')).toEqual(correct_moves);
+    expect(chess.getLegalMoves('N', 'g4')).toEqual(correct_moves);
   });
   test('Function checkMove should exists', () => {
     expect(chess.checkMove).toBeInstanceOf(Function);
   });
-  test('Function checkMove should return true or false depending of the position intended, current position and piece', () => {
-    expect(chess.checkMove('n', 'g4', 'f4')).toStrictEqual(false);
-    expect(chess.checkMove('n', 'g4', 'e5')).toStrictEqual(true);
+  test('Function checkMove should return true or false depending on the position intended, current position and piece', () => {
+    expect(chess.checkMove('N', 'g4', 'f4')).toStrictEqual(false);
+    expect(chess.checkMove('N', 'g4', 'e5')).toStrictEqual(true);
     expect(chess.checkMove('aaa', 'g4', 'e5')).toStrictEqual(false);
   });
 });
