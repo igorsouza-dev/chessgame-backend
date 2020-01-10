@@ -18,6 +18,12 @@ class Game extends Model {
     });
     return this;
   }
+
+  static associate(models) {
+    this.hasMany(models.Board, {
+      foreignKey: 'game_id',
+    });
+  }
 }
 
 export default Game;

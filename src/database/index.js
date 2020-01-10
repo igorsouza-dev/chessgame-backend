@@ -2,8 +2,9 @@ import Sequelize from 'sequelize';
 
 import databaseConfig from '../config/database';
 import Game from '../app/models/Game';
+import Board from '../app/models/Board';
 
-const models = [Game];
+const models = [Game, Board];
 
 class Database {
   constructor() {
