@@ -5,7 +5,7 @@ import cors from 'cors';
 import Youch from 'youch';
 
 import routes from './routes';
-// import './database';
+import './database';
 
 class App {
   constructor() {

@@ -8,13 +8,20 @@
     "dev": "nodemon src/server.js",
     "queue": "nodemon src/queue.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
-    "test": "jest --colors --verbose --watchAll --coverage",
+    "test": "NODE_ENV=test jest --colors --verbose --watchAll --coverage",
+    "pretest": "NODE_ENV=test yarn migrate:reset",
+    "migrate": "sequelize db:migrate",
+    "migrate:reset": "sequelize db:migrate:undo:all && yarn migrate",
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "sequelize": "^5.21.3",
+    "sequelize-cli": "^5.5.1",
+    "sqlite3": "^4.1.1",
     "youch": "^2.0.10"
   },
   "devDependencies": {
@@ -36,8 +43,19 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ],
+    "collectCoverageFrom": [
+      "src/app/**/*.js",
+      "src/routes.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ],
     "transform": {
       ".(js|jsx|ts|tsx)": "@sucrase/jest-plugin"
-    }
+    },
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
   }
 }
