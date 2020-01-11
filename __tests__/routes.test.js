@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../src/app';
-// import './utils/truncate';
+import './utils/truncate';
 
 describe('Routes', () => {
   const browserId = new Date().getTime().toString();
