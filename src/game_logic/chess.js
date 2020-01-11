@@ -23,7 +23,7 @@ class Chess {
     }
   }
 
-  resetBoard() {
+  emptyBoard() {
     const squares = Object.keys(SQUARES);
     this.board = {};
     squares.map(square => {
@@ -33,6 +33,12 @@ class Chess {
       };
       return square;
     });
+  }
+
+  resetBoard() {
+    this.emptyBoard();
+    this.board.b8 = { color: 'B', piece: KNIGHT };
+    this.board.g1 = { color: 'W', piece: KNIGHT };
   }
 
   getBoard() {

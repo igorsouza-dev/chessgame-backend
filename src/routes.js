@@ -1,16 +1,13 @@
 import { Router } from 'express';
 import GameController from './app/controllers/GameController';
-import BoardController from './app/controllers/BoardController';
 import browserIdMiddleware from './app/middlewares/browserId';
-import MoveController from './app/controllers/MoveController';
+import lastBoard from './app/middlewares/lastBoard';
 
 const routes = new Router();
-routes.post('/games', GameController.store);
+routes.post('/new-game', GameController.newGame);
 
 routes.use(browserIdMiddleware);
-routes.get('/games', GameController.index);
-routes.post('/boards', BoardController.store);
-routes.get('/boards', BoardController.index);
-
-routes.post('/moves', MoveController.store);
+routes.get('/load-game', GameController.loadGame);
+routes.get('/legal-moves/:position', GameController.legalMoves);
+routes.get('/make-move/:from/:to', lastBoard, GameController.makeMove);
 export default routes;

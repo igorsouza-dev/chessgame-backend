@@ -5,13 +5,13 @@
   "author": "Igor Souza <igorsouza.dev@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/server.js",
+    "dev": "NODE_ENV=development nodemon src/server.js",
     "queue": "nodemon src/queue.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
     "test": "NODE_ENV=test jest --colors --verbose --watchAll --coverage",
     "pretest": "NODE_ENV=test yarn migrate:reset",
     "migrate": "sequelize db:migrate",
-    "migrate:reset": "sequelize db:migrate:undo:all && yarn migrate",
+    "migrate:reset": "sequelize db:migrate:undo:all && sequelize db:migrate",
     "start": "node dist/server.js"
   },
   "dependencies": {
@@ -45,7 +45,8 @@
     ],
     "collectCoverageFrom": [
       "src/app/**/*.js",
-      "src/routes.js"
+      "src/routes.js",
+      "src/game_logic/*.js"
     ],
     "coverageReporters": [
       "text",

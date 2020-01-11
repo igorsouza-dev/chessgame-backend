@@ -13,6 +13,8 @@ class Board extends Model {
           },
         },
         board: Sequelize.STRING,
+        move_number: Sequelize.INTEGER,
+        turn_player: Sequelize.STRING,
       },
       {
         sequelize,

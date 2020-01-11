@@ -18,6 +18,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      move_number: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      turn_player: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,

@@ -85,11 +85,13 @@ describe('Chess ', () => {
   test('Function getLegalMoves should return an array of moves for the Knight', () => {
     const playerColor = 'W';
     let correct_moves = ['d4', 'e5', 'g5', 'h4', 'h2', 'g1', 'e1', 'd2'];
+    chess.emptyBoard();
     expect(chess.getLegalMoves(playerColor, 'N', 'f3')).toEqual(correct_moves);
+
     correct_moves = ['e5', 'f6', 'h6', 'h2', 'f2', 'e3'];
     expect(chess.getLegalMoves(playerColor, 'N', 'g4')).toEqual(correct_moves);
   });
-  test('Function getLegalMoves should', () => {
+  test('Function getLegalMoves should return the correct array of moves', () => {
     const correct_moves = ['f6', 'h6', 'h2', 'f2', 'e3'];
     const playerColor = 'W';
     const board = chess.getBoard();
