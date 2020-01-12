@@ -1,4 +1,8 @@
-import Chess, { SQUARES, PIECE_OFFSETS } from '../src/game_logic/chess';
+import Chess, {
+  SQUARES,
+  PIECE_OFFSETS,
+  PAWN_OFFSETS,
+} from '../src/game_logic/chess';
 
 describe('Chess ', () => {
   let chess;
@@ -52,6 +56,7 @@ describe('Chess ', () => {
   });
   test('Array of pieces movesets should exists ', () => {
     expect(PIECE_OFFSETS).toBeTruthy();
+    expect(PAWN_OFFSETS).toBeTruthy();
   });
   test('Array of possible moves for the Knight should be correctly mapped', () => {
     const possible_moves = [-18, -33, -31, -14, 18, 33, 31, 14];
@@ -91,7 +96,57 @@ describe('Chess ', () => {
     correct_moves = ['e5', 'f6', 'h6', 'h2', 'f2', 'e3'];
     expect(chess.getLegalMoves(playerColor, 'N', 'g4')).toEqual(correct_moves);
   });
+  test('Function getRank should return 2 when position a2', () => {
+    expect(chess.getRank('a2')).toEqual('2');
+    // even when passing the integer position
+    expect(chess.getRank(96)).toEqual('2');
+  });
+  test('Function pawnCanDoubleJump should return true when position a2 for the white pawn', () => {
+    chess.emptyBoard();
+    const board = chess.getBoard();
+    board.b2.piece = 'P';
+    board.b2.color = 'W';
+    chess.setBoard(board);
+    expect(chess.pawnCanDoubleJump('W', 'b2')).toEqual(true);
+  });
+  test('Function getLegaMoves should return the correct array of moves for the Pawn', () => {
+    const playerColor = 'W';
+    const enemyColor = 'B';
+    chess.emptyBoard();
+    // normal movement
+    let correct_moves = ['b4'];
+    expect(chess.getLegalMoves(playerColor, 'P', 'b3')).toEqual(correct_moves);
+
+    chess.emptyBoard();
+    // pawn movement with enemy in front of him
+    const board = chess.getBoard();
+    board.b4.color = enemyColor;
+    board.b4.piece = 'P';
+    correct_moves = [];
+    expect(chess.getLegalMoves(playerColor, 'P', 'b3')).toEqual(correct_moves);
+
+    // pawn can attack
+    board.c4.color = enemyColor;
+    board.c4.piece = 'P';
+    board.a4.color = enemyColor;
+    board.a4.piece = 'P';
+    correct_moves = ['a4', 'c4'];
+    expect(chess.getLegalMoves(playerColor, 'P', 'b3')).toEqual(correct_moves);
+    // pawn should not be able to attack his own pieces
+    board.a4.color = playerColor;
+    board.a4.piece = 'P';
+    correct_moves = ['c4'];
+    expect(chess.getLegalMoves(playerColor, 'P', 'b3')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should allow Pawn double jump when second rank', () => {
+    const playerColor = 'W';
+    chess.emptyBoard();
+    // normal movement
+    const correct_moves = ['b3', 'b4'];
+    expect(chess.getLegalMoves(playerColor, 'P', 'b2')).toEqual(correct_moves);
+  });
   test('Function getLegalMoves should return the correct array of moves', () => {
+    chess.emptyBoard();
     const correct_moves = ['f6', 'h6', 'h2', 'f2', 'e3'];
     const playerColor = 'W';
     const board = chess.getBoard();

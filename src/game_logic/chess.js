@@ -1,4 +1,12 @@
 export const KNIGHT = 'N';
+export const PAWN = 'P';
+export const KING = 'K';
+export const BISHOP = 'B';
+export const QUEEN = 'Q';
+export const ROOK = 'R';
+
+const WHITE = 'W';
+const BLACK = 'B';
 
 // prettier-ignore
 export const SQUARES = {
@@ -11,8 +19,17 @@ export const SQUARES = {
   a2:  96, b2:  97, c2:  98, d2:  99, e2: 100, f2: 101, g2: 102, h2: 103,
   a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
 };
+export const PAWN_OFFSETS = {
+  B: [16, 32, 17, 15],
+  W: [-16, -32, -17, -15],
+};
+export const second_rank = { B: '7', W: '2' };
 export const PIECE_OFFSETS = {
   N: [-18, -33, -31, -14, 18, 33, 31, 14],
+  B: [-17, -15, 17, 15],
+  R: [-16, 1, 16, -1],
+  Q: [-17, -16, -15, 1, 17, 16, 15, -1],
+  K: [-17, -16, -15, 1, 17, 16, 15, -1],
 };
 class Chess {
   constructor(board) {
@@ -37,8 +54,41 @@ class Chess {
 
   resetBoard() {
     this.emptyBoard();
-    this.board.b8 = { color: 'B', piece: KNIGHT };
-    this.board.g1 = { color: 'W', piece: KNIGHT };
+    this.board.a8 = { color: BLACK, piece: ROOK };
+    this.board.b8 = { color: BLACK, piece: KNIGHT };
+    this.board.c8 = { color: BLACK, piece: BISHOP };
+    this.board.d8 = { color: BLACK, piece: QUEEN };
+    this.board.e8 = { color: BLACK, piece: KING };
+    this.board.f8 = { color: BLACK, piece: BISHOP };
+    this.board.g8 = { color: BLACK, piece: KNIGHT };
+    this.board.h8 = { color: BLACK, piece: ROOK };
+
+    this.board.a7 = { color: BLACK, piece: PAWN };
+    this.board.b7 = { color: BLACK, piece: PAWN };
+    this.board.c7 = { color: BLACK, piece: PAWN };
+    this.board.d7 = { color: BLACK, piece: PAWN };
+    this.board.e7 = { color: BLACK, piece: PAWN };
+    this.board.f7 = { color: BLACK, piece: PAWN };
+    this.board.g7 = { color: BLACK, piece: PAWN };
+    this.board.h7 = { color: BLACK, piece: PAWN };
+
+    this.board.a1 = { color: WHITE, piece: ROOK };
+    this.board.b1 = { color: WHITE, piece: KNIGHT };
+    this.board.c1 = { color: WHITE, piece: BISHOP };
+    this.board.d1 = { color: WHITE, piece: QUEEN };
+    this.board.e1 = { color: WHITE, piece: KING };
+    this.board.f1 = { color: WHITE, piece: BISHOP };
+    this.board.g1 = { color: WHITE, piece: KNIGHT };
+    this.board.h1 = { color: WHITE, piece: ROOK };
+
+    this.board.a2 = { color: WHITE, piece: PAWN };
+    this.board.b2 = { color: WHITE, piece: PAWN };
+    this.board.c2 = { color: WHITE, piece: PAWN };
+    this.board.d2 = { color: WHITE, piece: PAWN };
+    this.board.e2 = { color: WHITE, piece: PAWN };
+    this.board.f2 = { color: WHITE, piece: PAWN };
+    this.board.g2 = { color: WHITE, piece: PAWN };
+    this.board.h2 = { color: WHITE, piece: PAWN };
   }
 
   getBoard() {
@@ -75,23 +125,92 @@ class Chess {
     return swaped[value];
   }
 
+  getRank(position) {
+    if (typeof position === 'string') {
+      return position[1];
+    }
+    return this.valueToSAN(position)[1];
+  }
+
+  pawnCanDoubleJump(color, position) {
+    if (typeof position === 'string') {
+      position = SQUARES[position];
+    }
+    const rank = this.getRank(position);
+    if (rank === second_rank[color]) {
+      const offsets = PAWN_OFFSETS[color];
+
+      const move = offsets[1] + position;
+      let san = this.valueToSAN(move);
+      const square = this.board[san];
+
+      const front = offsets[0] + position;
+      san = this.valueToSAN(front);
+      const frontSquare = this.board[san];
+
+      if (square && frontSquare) {
+        if (!square.piece && !frontSquare.piece) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   getLegalMoves(playerColor, piece, position) {
     const pos_value = this.isPositionInsideBoard(position);
-
-    const offsets = PIECE_OFFSETS[piece];
     const legalMoves = [];
-    if (pos_value && offsets) {
-      for (let i = 0; i < offsets.length; i++) {
-        const move = offsets[i] + pos_value;
-        if (this.isPositionInsideBoard(move)) {
-          const san = this.valueToSAN(move);
-          const square = this.board[san];
-          if (!square.piece || square.color !== playerColor) {
-            legalMoves.push(san);
+
+    if (piece === PAWN) {
+      const offsets = PAWN_OFFSETS[playerColor];
+      if (pos_value && offsets) {
+        const pawnPossibleMoves = [];
+        // normal movement
+        pawnPossibleMoves.push(offsets[0] + pos_value);
+
+        // double jump
+        if (this.pawnCanDoubleJump(playerColor, pos_value)) {
+          pawnPossibleMoves.push(offsets[1] + pos_value);
+        }
+
+        for (let i = 0; i < pawnPossibleMoves.length; i++) {
+          const move = pawnPossibleMoves[i];
+          if (this.isPositionInsideBoard(move)) {
+            const san = this.valueToSAN(move);
+            const square = this.board[san];
+            if (!square.piece) {
+              legalMoves.push(san);
+            }
+          }
+        }
+
+        for (let i = 2; i < 4; i++) {
+          const pawn_attack = offsets[i] + pos_value;
+          if (this.isPositionInsideBoard(pawn_attack)) {
+            const san = this.valueToSAN(pawn_attack);
+            const square = this.board[san];
+            if (square.piece && square.color !== playerColor) {
+              legalMoves.push(san);
+            }
+          }
+        }
+      }
+    } else {
+      const offsets = PIECE_OFFSETS[piece];
+      if (pos_value && offsets) {
+        for (let i = 0; i < offsets.length; i++) {
+          const move = offsets[i] + pos_value;
+          if (this.isPositionInsideBoard(move)) {
+            const san = this.valueToSAN(move);
+            const square = this.board[san];
+            if (!square.piece || square.color !== playerColor) {
+              legalMoves.push(san);
+            }
           }
         }
       }
     }
+
     return legalMoves;
   }
 
