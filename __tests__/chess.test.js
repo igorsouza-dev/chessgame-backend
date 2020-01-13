@@ -68,6 +68,7 @@ describe('Chess ', () => {
   test('Function isPositionInsideBoard should return the position value or null depending on the position passed', () => {
     expect(chess.isPositionInsideBoard('a88')).toStrictEqual(null);
     expect(chess.isPositionInsideBoard('a1')).toStrictEqual(112);
+    expect(chess.isPositionInsideBoard('a8')).toStrictEqual(0);
     expect(chess.isPositionInsideBoard(200)).toStrictEqual(null);
     expect(chess.isPositionInsideBoard(-1)).toStrictEqual(null);
     expect(chess.isPositionInsideBoard(2)).toStrictEqual(2);
@@ -109,7 +110,7 @@ describe('Chess ', () => {
     chess.setBoard(board);
     expect(chess.pawnCanDoubleJump('W', 'b2')).toEqual(true);
   });
-  test('Function getLegaMoves should return the correct array of moves for the Pawn', () => {
+  test('Function getLegalMoves should return the correct array of moves for the Pawn', () => {
     const playerColor = 'W';
     const enemyColor = 'B';
     chess.emptyBoard();
@@ -144,6 +145,103 @@ describe('Chess ', () => {
     // normal movement
     const correct_moves = ['b3', 'b4'];
     expect(chess.getLegalMoves(playerColor, 'P', 'b2')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should return the correct array of moves for the King', () => {
+    const playerColor = 'W';
+    chess.emptyBoard();
+    // normal movement
+    let correct_moves = ['a3', 'b3', 'c3', 'c2', 'c1', 'b1', 'a1', 'a2'];
+    expect(chess.getLegalMoves(playerColor, 'K', 'b2')).toEqual(correct_moves);
+    // attacking one pawn and having one friendly pawn around
+    correct_moves = ['a3', 'c3', 'c2', 'c1', 'b1', 'a1', 'a2'];
+    const board = chess.getBoard();
+    board.b3.piece = 'P';
+    board.b3.color = 'W';
+    board.c3.piece = 'P';
+    board.c3.color = 'B';
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'K', 'b2')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should return the correct array of moves for the Bishop', () => {
+    const playerColor = 'W';
+    chess.emptyBoard();
+    // normal movement
+    let correct_moves = ['a3', 'c3', 'd4', 'e5', 'f6', 'g7', 'h8', 'c1', 'a1'];
+    expect(chess.getLegalMoves(playerColor, 'B', 'b2')).toEqual(correct_moves);
+    // friendly pawn blocking the path
+    const board = chess.getBoard();
+    board.d4.piece = 'P';
+    board.d4.color = 'W';
+    correct_moves = ['a3', 'c3', 'c1', 'a1'];
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'B', 'b2')).toEqual(correct_moves);
+    // enemy pawn blocking the path
+    board.d4.color = 'B';
+    correct_moves = ['a3', 'c3', 'd4', 'c1', 'a1'];
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'B', 'b2')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should return the correct array of moves for the Queen', () => {
+    const playerColor = 'W';
+    chess.emptyBoard();
+    // normal movement
+    // prettier-ignore
+    let correct_moves = [
+      'a3', 'b3', 'b4',
+      'b5', 'b6', 'b7', 'b8',
+      'c3', 'd4', 'e5', 'f6',
+      'g7', 'h8', 'c2', 'd2',
+      'e2', 'f2', 'g2', 'h2',
+      'c1', 'b1', 'a1', 'a2'
+    ];
+    expect(chess.getLegalMoves(playerColor, 'Q', 'b2')).toEqual(correct_moves);
+    const board = chess.getBoard();
+    // friendly pawn blocks the path
+    board.d4.piece = 'P';
+    board.d4.color = playerColor;
+    // prettier-ignore
+    correct_moves = [
+      'a3', 'b3', 'b4',
+      'b5', 'b6', 'b7', 'b8',
+      'c3', 'c2', 'd2',
+      'e2', 'f2', 'g2', 'h2',
+      'c1', 'b1', 'a1', 'a2'
+    ];
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'Q', 'b2')).toEqual(correct_moves);
+    // enemy pawn blocks the path
+    board.d4.color = 'B';
+    // prettier-ignore
+    correct_moves = [
+      'a3', 'b3', 'b4',
+      'b5', 'b6', 'b7', 'b8',
+      'c3', 'd4', 'c2', 'd2',
+      'e2', 'f2', 'g2', 'h2',
+      'c1', 'b1', 'a1', 'a2'
+    ];
+    chess.setBoard(board);
+    expect(chess.getLegalMoves(playerColor, 'Q', 'b2')).toEqual(correct_moves);
+  });
+  test('Function getLegalMoves should return the correct array of moves for the Rook', () => {
+    chess.emptyBoard();
+    const playerColor = 'W';
+    // normal movement
+    // prettier-ignore
+    let correct_moves = [
+      'b3', 'b4', 'b5', 'b6',
+      'b7', 'b8', 'c2', 'd2',
+      'e2', 'f2', 'g2', 'h2',
+      'b1', 'a2'
+    ];
+    expect(chess.getLegalMoves(playerColor, 'R', 'b2')).toEqual(correct_moves);
+    // prettier-ignore
+    correct_moves = [
+      'b8', 'c8', 'd8', 'e8',
+      'f8', 'g8', 'h8', 'a7',
+      'a6', 'a5', 'a4', 'a3',
+      'a2', 'a1'
+    ];
+    expect(chess.getLegalMoves(playerColor, 'R', 'a8')).toEqual(correct_moves);
   });
   test('Function getLegalMoves should return the correct array of moves', () => {
     chess.emptyBoard();

@@ -7,7 +7,7 @@ export const ROOK = 'R';
 
 const WHITE = 'W';
 const BLACK = 'B';
-
+const valid_pieces = ['N', 'P', 'K', 'B', 'Q', 'R'];
 // prettier-ignore
 export const SQUARES = {
   a8:   0, b8:   1, c8:   2, d8:   3, e8:   4, f8:   5, g8:   6, h8:   7,
@@ -160,10 +160,9 @@ class Chess {
   getLegalMoves(playerColor, piece, position) {
     const pos_value = this.isPositionInsideBoard(position);
     const legalMoves = [];
-
-    if (piece === PAWN) {
-      const offsets = PAWN_OFFSETS[playerColor];
-      if (pos_value && offsets) {
+    if (pos_value !== null && valid_pieces.includes(piece)) {
+      if (piece === PAWN) {
+        const offsets = PAWN_OFFSETS[playerColor];
         const pawnPossibleMoves = [];
         // normal movement
         pawnPossibleMoves.push(offsets[0] + pos_value);
@@ -194,17 +193,29 @@ class Chess {
             }
           }
         }
-      }
-    } else {
-      const offsets = PIECE_OFFSETS[piece];
-      if (pos_value && offsets) {
+      } else {
+        const offsets = PIECE_OFFSETS[piece];
         for (let i = 0; i < offsets.length; i++) {
-          const move = offsets[i] + pos_value;
-          if (this.isPositionInsideBoard(move)) {
+          let move = pos_value;
+          while (true) {
+            move += offsets[i];
+            if (!this.isPositionInsideBoard(move)) {
+              break;
+            }
             const san = this.valueToSAN(move);
             const square = this.board[san];
-            if (!square.piece || square.color !== playerColor) {
+            if (!square.piece) {
               legalMoves.push(san);
+            } else {
+              if (square.color === playerColor) {
+                break;
+              }
+              legalMoves.push(san);
+              break;
+            }
+
+            if (piece === KING || piece === KNIGHT) {
+              break;
             }
           }
         }
