@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('boards', {
+    return queryInterface.createTable('moves', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,21 +14,29 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false,
       },
-      board: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       move_number: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      turn_player: {
+      player: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      score: {
+      from: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
+      },
+      to: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      piece: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      flag: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -41,7 +49,7 @@ module.exports = {
     });
   },
 
-  down: queryInterface => {
-    return queryInterface.dropTable('boards');
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('moves');
   },
 };

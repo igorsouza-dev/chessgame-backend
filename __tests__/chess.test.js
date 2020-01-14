@@ -294,13 +294,23 @@ describe('Chess ', () => {
     expect(board.g4).toEqual({ color: '', piece: null });
     // checks when target square is the same color
     board.g4 = { color: player1, piece: 'N' };
-    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual(false);
+    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual(null);
 
     // empty target square
     board.g4 = { color: '', piece: '' };
-    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual(true);
+    expect(chess.move(player1, 'e5', 'g4')).toStrictEqual('-');
 
     // checks if player is the owner of the piece
-    expect(chess.move(player2, 'e5', 'g4')).toStrictEqual(false);
+    expect(chess.move(player2, 'e5', 'g4')).toStrictEqual(null);
+  });
+  test('Function move should return the flag x when the movement was an attack', () => {
+    const player1 = 'W';
+    const player2 = 'B';
+    const board = chess.getBoard();
+    board.g4 = { color: player1, piece: 'N' };
+    board.e5 = { color: player2, piece: 'P' };
+    chess.setBoard(board);
+    const moved = chess.move(player1, 'g4', 'e5');
+    expect(moved).toStrictEqual('x');
   });
 });

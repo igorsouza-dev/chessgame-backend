@@ -40,6 +40,20 @@ class Chess {
     }
   }
 
+  initialScore() {
+    const pieces = {};
+    pieces[PAWN] = 0;
+    pieces[KNIGHT] = 0;
+    pieces[BISHOP] = 0;
+    pieces[ROOK] = 0;
+    pieces[QUEEN] = 0;
+    pieces[KING] = 0;
+    const score = {};
+    score[WHITE] = pieces;
+    score[BLACK] = pieces;
+    return score;
+  }
+
   emptyBoard() {
     const squares = Object.keys(SQUARES);
     this.board = {};
@@ -234,12 +248,18 @@ class Chess {
     const square = this.board[from];
     if (square.color && square.color === playerColor) {
       if (this.checkMove(playerColor, square.piece, from, to)) {
+        let flag = '-'; // normal movement
+        if (this.board[to].color) {
+          if (this.board[to].color !== playerColor) {
+            flag = 'x'; // attack movement
+          }
+        }
         this.board[to] = { color: playerColor, piece: square.piece };
         this.board[from] = { color: '', piece: null };
-        return true;
+        return flag;
       }
     }
-    return false;
+    return null;
   }
 }
 export default Chess;

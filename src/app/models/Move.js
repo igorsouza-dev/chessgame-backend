@@ -1,7 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 import Game from './Game';
 
-class Board extends Model {
+class Move extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -12,10 +12,12 @@ class Board extends Model {
             key: 'id',
           },
         },
-        board: Sequelize.STRING,
-        score: Sequelize.STRING,
         move_number: Sequelize.INTEGER,
-        turn_player: Sequelize.STRING,
+        player: Sequelize.STRING,
+        from: Sequelize.STRING,
+        to: Sequelize.STRING,
+        piece: Sequelize.STRING,
+        flag: Sequelize.STRING,
       },
       {
         sequelize,
@@ -31,4 +33,4 @@ class Board extends Model {
   }
 }
 
-export default Board;
+export default Move;
