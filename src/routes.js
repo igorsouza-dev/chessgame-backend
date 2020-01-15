@@ -4,6 +4,11 @@ import browserIdMiddleware from './app/middlewares/browserId';
 import lastBoard from './app/middlewares/lastBoard';
 
 const routes = new Router();
+
+routes.get('/', (req, res) => {
+  return res.json({ message: 'Api OK!' });
+});
+
 routes.post('/new-game', GameController.newGame);
 
 routes.use(browserIdMiddleware);
