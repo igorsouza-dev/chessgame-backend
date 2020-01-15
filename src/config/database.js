@@ -2,12 +2,12 @@ require('dotenv').config();
 
 module.exports = {
   production: {
-    dialect: 'sqlite',
+    dialect: 'postgres',
     host: process.env.DB_HOST,
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    storage: './src/database/db/chess.sqlite3',
+    port: process.env.DB_PORT,
     define: {
       timestamps: true,
       underscored: true,
