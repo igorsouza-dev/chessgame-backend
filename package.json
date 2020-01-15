@@ -5,7 +5,7 @@
   "author": "Igor Souza <igorsouza.dev@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon src/server.js",
+    "dev": "nodemon src/server.js",
     "queue": "nodemon src/queue.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
     "test": "NODE_ENV=test jest --colors --verbose --watchAll --coverage",
@@ -15,10 +15,12 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@sentry/node": "^5.11.0",
     "bcrypt": "^3.0.7",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
     "pg": "^7.17.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.3",

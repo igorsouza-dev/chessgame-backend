@@ -15,7 +15,7 @@ module.exports = {
         allowNull: false,
       },
       board: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       move_number: {
