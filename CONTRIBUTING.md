@@ -9,6 +9,7 @@ This project has Eslint, Prettier and EditorConfig settings, so make sure to ins
 - Add special moves like Castling, En passant and Promotion
 - Add check and checkmate
 - Add draw
+- Add history navigation through the moves of the game
 - Help with translation. I'm not an native english speaker, so this project may have some typos
 - You can add other things that I'm not listing here
 
