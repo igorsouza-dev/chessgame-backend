@@ -8,7 +8,7 @@ Chess Mate is a web chess game that allows players to play with their friends on
 
 This is only the backend, you can access the frontend repository in [here](https://github.com/igorsouza-dev/chessgame-frontend)
 
-If you wish to play the game you can click [here](https://dashboard.heroku.com/apps/chess-front)
+If you wish to play the game you can click [here](http://chess-front.herokuapp.com/)
 
 ## Table of contents
 
@@ -139,7 +139,7 @@ The basic idea behind the project is to allow the user to play the game and save
 - **Boards**
   This table holds the state of the game, each move will generate a new board. Imagine this table as a snapshot of that moment of the game
   - id
-  - game_id - has a relatio with the games table
+  - game_id - foreign key of the games table
   - board - A JSON of the current board state
   - move_number - A sequence number that helps with history navigation
   - turn_player - the player who made the move
