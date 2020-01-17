@@ -8,7 +8,7 @@ Chess Mate is a web chess game that allows players to play with their friends on
 
 This is only the backend, you can access the frontend repository in [here](https://github.com/igorsouza-dev/chessgame-frontend)
 
-If you wish to play the game you can click [here](https://dashboard.heroku.com/apps/chess-front)
+If you wish to play the game you can click [here](https://chess-front.herokuapp.com/)
 
 ## Table of contents
 
